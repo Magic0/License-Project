@@ -1,0 +1,7 @@
+server:
+  port: ${CUSTOM.SERVER.PORT:8761}
+
+eureka:
+  client:
+    fetchRegistry: false
+    registerWithEureka: false

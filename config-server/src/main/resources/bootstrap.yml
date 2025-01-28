@@ -1,0 +1,30 @@
+server:
+  port: ${CUSTOM.SERVER.PORT:9000}
+
+spring:
+  application:
+    name: config-server
+
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/Magic0/license-project-config-server-files.git
+          username: Magic0
+          password: '{cipher}f912704fe14f111b27f31190801fefcaf2553646835e02ac5a39aec332871fd273259deb102d49c1e93f1f98cf093c0da49feb79b38b6e25596a4b3b1e2aac4d'
+          cloneOnStart: true
+          defaultLabel: master
+          refreshRate: 10
+        encrypt:
+          enabled: true
+
+
+eureka:
+  client:
+    fetchRegistry: true
+    registerWithEureka: true
+    serviceUrl:
+      defaultZone: ${EUREKA.SERVER.HOST:http://server-01.com:8761/eureka}
+
+encrypt:
+  key: Magic0-secret #Solo funciona en el bootstrap.yml, porque esto es antes de compilar y en properties parece que lo ignora
