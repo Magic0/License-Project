@@ -1,0 +1,122 @@
+spring:
+  application:
+    name: cloud-gateway
+  cloud:
+    config:
+      uri: ${CONFIG.SERVER.HOSTNAME:http://localhost:9000}
+      profile: ${ENVIRONMENT.DEPLOY:prod} # product-service-dev.yml
+      enabled: true
+    gateway:
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "http://localhost:3000, http://server-02.com"
+            allowedMethods:
+              - POST
+              - GET
+      routes:
+        - id: product-service-route
+          uri: lb://product-service
+          predicates:
+            - Path=/api/product/**
+          filters:
+            - StripPrefix=2
+            - AddRequestParameter=flag,false
+            - AddRequestHeader=appCallerName,Mitocode
+            - name: CircuitBreaker
+              args:
+                name: product-service-circuitbreaker
+                statusCodes: 400,401,403,500,503,504
+                fallbackUri: forward:/api/user/api/mitocode/user
+
+            ## Customer Filter 1
+            # - name: MitocodeCustomFilter
+            #   args:
+            #     headerKey: Text1
+            #     headerValue: Text2
+            - MitocodeCustomFilter=Text1, Text2, true, Mitocode
+
+        - id: user-service-route
+          uri: lb://user-service
+          predicates:
+            - Path=/api/user/**
+          metadata:
+            cors:
+              allowedOrigins: 'http://localhost:3001'
+              allowedMethods:
+                - GET
+              allowedHeader: '*'
+              maxAge: 30
+          filters:
+            - StripPrefix=2
+            - AddRequestParameter=email,mitocode@mitocode.com
+
+        - id: product-query-v1-service-route # 9022
+          uri: lb://product-query-service
+          predicates:
+            - Path=/api/product-query/**
+            - Weight=product-service, 0
+          filters:
+            - StripPrefix=2
+
+        - id: product-query-v2-service-route # 7099
+          uri: lb://product-query-service-v2
+          predicates:
+            - Path=/api/product-query/**
+            - Weight=product-service, 10
+          filters:
+            - StripPrefix=2
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+        base-path: /actuator
+
+mitocode:
+  security:
+    key: 6324837009e15dae3f11d515423ee4c87d5942c82767b118a86fc1e5eb3d21b1293ed6e3680dda8ea3d80224638d30e4a8373f796a4d2f0133cafc989a7f5dd8834ee8defb1e76bce6ff02f9e041606b7b569004127add844b1f17db5f60492c
+
+
+# Otel  Config
+
+otel:
+  logs:
+    exporter: otlp
+  metrics:
+    exporter: otlp
+  traces:
+    exporter: otlp
+
+  metric:
+    export:
+      interval: 1000
+  instrumentation:
+    micrometer:
+      enabled: true
+encrypt:
+  key: mitocode-secret
+
+
+  server:
+    port: ${CUSTOM.SERVER.PORT:9080}
+
+  # Resilience4j Configuration
+  resilience4j:
+    circuitbreaker:
+      configs:
+        product-service-cb:
+          slidingWindowType: count_based
+          minimumNumberOfCalls: 13
+          slidingWindowSize: 13
+          failureRateThreshold: 50
+          waitDurationInOpenState: 30s
+          permittedNumberOfCallsInHalfOpenState: 5
+          automaticTransitionFromOpenToHalfOpenEnabled: true
+          slowCallDurationThreshold: 2000ms
+          slowCallRateThreshold: 20
+      instances:
+        product-service-circuitbreaker:
+          base-config: product-service-cb
+
