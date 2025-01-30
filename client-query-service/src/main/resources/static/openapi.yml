@@ -1,0 +1,59 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+  - url: http://localhost:9040
+    description: Generated server url
+paths:
+  /v0/clients:
+    get:
+      tags:
+        - client-controller
+      operationId: getAllClients
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ClientDTO'
+  /v0/clients/{id}:
+    get:
+      tags:
+        - client-controller
+      operationId: getClientById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ClientDTO'
+components:
+  schemas:
+    ClientDTO:
+      type: object
+      properties:
+        name:
+          type: string
+        lastname:
+          type: string
+        email:
+          type: string
+        birthday:
+          type: string
+          format: date
+        port:
+          type: integer
+          format: int32
+        dni:
+          type: string

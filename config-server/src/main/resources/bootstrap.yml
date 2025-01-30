@@ -27,4 +27,4 @@ eureka:
       defaultZone: ${EUREKA.SERVER.HOST:http://server-01.com:8761/eureka}
 
 encrypt:
-  key: Magic0-secret #Solo funciona en el bootstrap.yml, porque esto es antes de compilar y en properties parece que lo ignora
+  key: Magic0-secret

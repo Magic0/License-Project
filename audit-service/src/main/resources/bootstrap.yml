@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: audit-service
+  cloud:
+    config:
+      uri: ${CONFIG.SERVER.HOSTNAME:http://localhost:9000}
+      profile: ${ENVIRONMENT.DEPLOY:prod} # product-service-dev.yml
+      enabled: true
+
+encrypt:
+  key: Magic0-secret

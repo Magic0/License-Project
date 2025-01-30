@@ -1,0 +1,46 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+  - url: http://localhost:9030
+    description: Generated server url
+paths:
+  /v0/user:
+    get:
+      tags:
+        - user-controller
+      operationId: getAllLicenses
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserDTO'
+components:
+  schemas:
+    UserDTO:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        lastname:
+          type: string
+        email:
+          type: string
+        username:
+          type: string
+        password:
+          type: string
+        roles:
+          type: array
+          items:
+            type: string
+        port:
+          type: integer
+          format: int32

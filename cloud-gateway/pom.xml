@@ -8,7 +8,7 @@
 		<version>3.4.0</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.mitocode.microservices</groupId>
+	<groupId>com.mitocode</groupId>
 	<artifactId>cloud-gateway</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>cloud-gateway</name>
@@ -101,11 +101,11 @@
 <!--		</dependency>-->
 
 		<!-- OpenTelemetry Dependency -->
-		<dependency>
-			<groupId>io.opentelemetry.instrumentation</groupId>
-			<artifactId>opentelemetry-spring-boot-starter</artifactId>
-			<version>2.10.0</version>
-		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>io.opentelemetry.instrumentation</groupId>-->
+<!--			<artifactId>opentelemetry-spring-boot-starter</artifactId>-->
+<!--			<version>2.10.0</version>-->
+<!--		</dependency>-->
 
 
 
@@ -143,7 +143,7 @@
 						<path>
 							<groupId>org.projectlombok</groupId>
 							<artifactId>lombok</artifactId>
-							<version>1.18.30</version>
+							<version>1.18.36</version>
 						</path>
 					</annotationProcessorPaths>
 				</configuration>

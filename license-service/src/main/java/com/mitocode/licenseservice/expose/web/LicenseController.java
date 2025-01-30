@@ -5,11 +5,14 @@ import com.mitocode.licenseservice.model.dto.LicenseDTO;
 import com.mitocode.licenseservice.service.LicenseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @Slf4j
@@ -71,5 +74,44 @@ public class LicenseController {
     public ResponseEntity<List<LicenseDTO>> getAllByActive(@RequestParam boolean active) {
         List<LicenseDTO> licenses = licenseService.getAllByActive(active);
         return ResponseEntity.ok(licenses);
+    }
+
+    @GetMapping("/slow/{flag}")
+    public ResponseEntity<List<LicenseDTO>> getAllLicensesWithFlagForSlow(@PathVariable("flag") boolean flag) throws InterruptedException {
+        if (flag) {
+            log.info("Product Service slow");
+            TimeUnit.MILLISECONDS.sleep(2400);
+        }
+
+        List<LicenseDTO> licenses = licenseService.getAllLicense();
+        return ResponseEntity.ok(licenses);
+    }
+
+    @GetMapping("/error/flag")
+    public ResponseEntity<List<LicenseDTO>> getAllLicensesWithFlag(@PathVariable("flag") boolean flag) throws InterruptedException {
+        if (flag) {
+            TimeUnit.MILLISECONDS.sleep(795);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+
+        List<LicenseDTO> licenses = licenseService.getAllLicense();
+        return ResponseEntity.ok(licenses);
+    }
+
+    @GetMapping("/api/mitocode/user")
+    public ResponseEntity<String> testPrefix() {
+        return ResponseEntity.ok("Response Ok");
+    }
+
+    @GetMapping(value = "/report-by-category-csv", produces = "text/csv")
+    public ResponseEntity<byte[]> getReportByCategoryCsv(){
+
+        byte[] report = licenseService.generateCsvReport();
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=licenses_report.csv");
+        headers.set(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_PLAIN_VALUE);
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(report);
     }
 }

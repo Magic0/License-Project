@@ -8,13 +8,21 @@ scrape_configs:
         labels:
           application: 'License Service Microservice Scrapping'
           
-  - job_name: 'Client Service Microservice'
+  - job_name: 'Client Query Service Microservice'
     metrics_path: '/actuator/prometheus'
     scrape_interval: 1s
     static_configs:
       - targets: ['host.docker.internal:9040']
         labels:
-          application: 'Client Service Microservice Scrapping'
+          application: 'Client Query Service Microservice Scrapping'
+
+  - job_name: 'Client Command Service Microservice'
+    metrics_path: '/actuator/prometheus'
+    scrape_interval: 1s
+    static_configs:
+      - targets: ['host.docker.internal:9045']
+        labels:
+          application: 'Client Command Service Microservice Scrapping'
           
   - job_name: 'User Service Microservice'
     metrics_path: '/actuator/prometheus'

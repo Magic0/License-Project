@@ -5,5 +5,5 @@ spring:
   cloud:
     config:
       uri: http://localhost:9000
-      profile: dev
+      profile: prod
       enabled: true

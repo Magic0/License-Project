@@ -1,0 +1,260 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+  - url: http://localhost:9050
+    description: Generated server url
+paths:
+  /v0/licenses/emitir:
+    post:
+      tags:
+        - license-controller
+      operationId: createLicense
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LicenseDTO'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/LicenseDTO'
+  /v0/licenses/{id}:
+    get:
+      tags:
+        - license-controller
+      operationId: getLicenseById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/LicenseDTO'
+    delete:
+      tags:
+        - license-controller
+      operationId: deleteLicense
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+    patch:
+      tags:
+        - license-controller
+      operationId: updateLicense
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LicenseDTO'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/LicenseDTO'
+  /v0/licenses/{id}/renovar:
+    patch:
+      tags:
+        - license-controller
+      operationId: updateLicense_1
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/LicenseDTO'
+  /v0/licenses:
+    get:
+      tags:
+        - license-controller
+      operationId: getAllLicenses
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LicenseDTO'
+  /v0/licenses/slow/{flag}:
+    get:
+      tags:
+        - license-controller
+      operationId: getAllLicensesWithFlagForSlow
+      parameters:
+        - name: flag
+          in: path
+          required: true
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LicenseDTO'
+  /v0/licenses/error/flag:
+    get:
+      tags:
+        - license-controller
+      operationId: getAllLicensesWithFlag
+      parameters: []
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LicenseDTO'
+  /v0/licenses/by-type:
+    get:
+      tags:
+        - license-controller
+      operationId: getAllByLicenseType
+      parameters:
+        - name: licenseType
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LicenseDTO'
+  /v0/licenses/by-category:
+    get:
+      tags:
+        - license-controller
+      operationId: getAllByLicenseCategory
+      parameters:
+        - name: licenseCategory
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LicenseDTO'
+  /v0/licenses/by-active:
+    get:
+      tags:
+        - license-controller
+      operationId: getAllByActive
+      parameters:
+        - name: active
+          in: query
+          required: true
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LicenseDTO'
+  /v0/licenses/api/mitocode/user:
+    get:
+      tags:
+        - license-controller
+      operationId: testPrefix
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+components:
+  schemas:
+    ClientDTO:
+      type: object
+      properties:
+        name:
+          type: string
+        lastname:
+          type: string
+        email:
+          type: string
+        birthday:
+          type: string
+          format: date
+        port:
+          type: integer
+          format: int32
+        dni:
+          type: string
+    LicenseDTO:
+      type: object
+      properties:
+        idLicense:
+          type: string
+        issueDate:
+          type: string
+          format: date
+        expirationDate:
+          type: string
+          format: date
+        isActive:
+          type: boolean
+        licenseType:
+          type: string
+        licenseCategory:
+          type: string
+        client:
+          $ref: '#/components/schemas/ClientDTO'
+        port:
+          type: integer
+          format: int32

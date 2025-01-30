@@ -1,5 +1,6 @@
 package com.mitocode.licenseservice.model.entity;
 
+import com.mitocode.common_models.model.entity.ClientEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

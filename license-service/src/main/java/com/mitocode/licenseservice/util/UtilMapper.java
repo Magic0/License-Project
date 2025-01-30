@@ -1,8 +1,8 @@
 package com.mitocode.licenseservice.util;
 
-import com.mitocode.licenseservice.model.dto.ClientDTO;
+import com.mitocode.common_models.model.dto.ClientDTO;
+import com.mitocode.common_models.model.entity.ClientEntity;
 import com.mitocode.licenseservice.model.dto.LicenseDTO;
-import com.mitocode.licenseservice.model.entity.ClientEntity;
 import com.mitocode.licenseservice.model.entity.LicenseEntity;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;

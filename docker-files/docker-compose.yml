@@ -6,8 +6,6 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: magic0
       MONGO_INITDB_ROOT_PASSWORD: mitocode
-    volumes:
-      - ./mongo-entry/mongo-init.sh:/docker-entrypoint-initdb.d/mongo-init.sh:ro
     ports:
       - 27017:27017
     networks:
@@ -26,10 +24,22 @@ services:
       ME_CONFIG_MONGODB_ADMINPASSWORD: mitocode
       ME_CONFIG_MONGODB_URL: mongodb://magic0:mitocode@mongo-service:27017
       ME_CONFIG_BASICAUTH_USERNAME: admin
-      ME_CONFIG_BASICAUTH_PASSWORD: admin123
+      ME_CONFIG_BASICAUTH_PASSWORD: pass
     networks:
       - magic0
-     
+    
+  postgres:
+    image: postgres:13.1-alpine
+    container_name: magic0-postgres
+    ports:
+      - 5433:5432
+    environment:
+      POSTGRES_USER: mitocode
+      POSTGRES_PASSWORD: mitocode
+      POSTGRES_DB: mitocode
+    networks:
+      - magic0
+      
   prometheus:
     image: prom/prometheus
     container_name: magic0-prometheus
@@ -58,6 +68,69 @@ services:
     container_name: magic0-loki
     ports:
       - 3100:3100
+    networks:
+      - magic0
+
+  zipkin:
+    image: ghcr.io/openzipkin/zipkin-slim
+    container_name: magic0-zipkin
+    ports:
+      - 9411:9411
+    environment:
+      - STORAGE_TYPE=mem
+    networks:
+      - magic0
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper
+    container_name: magic0-kafka-zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - magic0
+
+  broker:
+    image: confluentinc/cp-kafka
+    container_name: magic0-kafka-broker
+    ports:
+      - 9092:9092
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT, PLAINTEXT_INTERNAL:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092, PLAINTEXT_INTERNAL://broker:29092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_REPLICATION_FACTOR: 1
+    networks:
+      - magic0
+
+  mongo-service-kafka: # Id interno del servicio en mongo
+    image: mongo
+    container_name: magic0-mongo-kafka
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: magic0
+      MONGO_INITDB_ROOT_PASSWORD: mitocode
+      MONGO_INITDB_DATABASE: mitocode
+    ports: 
+      - 27018:27017
+    networks:
+      - magic0
+
+  mongo-express-kafka:
+    image: mongo-express
+    container_name: magic0-mongo-express-kafka
+    depends_on:
+      - mongo-service-kafka
+    ports:
+      - 8082:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: magic0
+      ME_CONFIG_MONGODB_ADMINPASSWORD: mitocode
+      ME_CONFIG_MONGODB_URL: mongodb://magic0:mitocode@mongo-service-kafka:27017
     networks:
       - magic0
       
