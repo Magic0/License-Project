@@ -23,4 +23,9 @@ public class UserController {
         List<UserDTO> licenses = userService.getAllUser();
         return ResponseEntity.ok(licenses);
     }
+
+    @GetMapping("/api/mitocode/user")
+    public ResponseEntity<String> testPrefix() {
+        return ResponseEntity.ok("Response Ok");
+    }
 }

@@ -4,7 +4,7 @@ spring:
   cloud:
     config:
       uri: ${CONFIG.SERVER.HOSTNAME:http://localhost:9000}
-      profile: ${ENVIRONMENT.DEPLOY:prod} # product-service-dev.yml
+      profile: ${ENVIRONMENT.DEPLOY:prod}
       enabled: true
 
 encrypt:

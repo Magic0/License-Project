@@ -1,0 +1,1105 @@
+{
+	"info": {
+		"_postman_id": "57124f45-5a8f-4407-90ae-9db95d5b0add",
+		"name": "ProyectoFinal",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "25079719"
+	},
+	"item": [
+		{
+			"name": "License Project",
+			"item": [
+				{
+					"name": "User-Service",
+					"item": [
+						{
+							"name": "Get Users",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:9030/v0/users",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9030",
+									"path": [
+										"v0",
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create User",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Martin1\",\r\n    \"lastname\":\"Garcia\",\r\n    \"username\": \"magic0\",\r\n    \"password\": \"123456\",\r\n    \"email\" : \"magic@gmail.com1\",\r\n    \"roles\" : [\"ROLE_CREATE\",\"ROLE_READ\",\"ROLE_UPDATE\",\"ROLE_DELETE\"]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:9080/api/user/v0/users",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9080",
+									"path": [
+										"api",
+										"user",
+										"v0",
+										"users"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "User-Service-Cloud",
+					"item": [
+						{
+							"name": "Get Users",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:9080/api/user/v0/users",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9080",
+									"path": [
+										"api",
+										"user",
+										"v0",
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create User",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Martin1\",\r\n    \"lastname\":\"Garcia\",\r\n    \"username\": \"magic0\",\r\n    \"password\": \"123456\",\r\n    \"email\" : \"magic@gmail.com1\",\r\n    \"roles\" : [\"ROLE_CREATE\",\"ROLE_READ\",\"ROLE_UPDATE\",\"ROLE_DELETE\"]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:9080/api/user/v0/users",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9080",
+									"path": [
+										"api",
+										"user",
+										"v0",
+										"users"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Client-Service",
+					"item": [
+						{
+							"name": "Get Clients",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:9045/v0/clients",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9045",
+									"path": [
+										"v0",
+										"clients"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Client",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"dni\" : \"11111111\",\r\n    \"name\": \"Juanito1\",\r\n    \"lastname\": \"Pepito1\",\r\n    \"email\": \"juanjo@gmail.com\",\r\n    \"birthday\": \"1990-10-23\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:9040/v0/clients",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9040",
+									"path": [
+										"v0",
+										"clients"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Client",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"dni\" : \"21345114\",\r\n    \"name\": \"Juanito\",\r\n    \"lastname\": \"Pepito\",\r\n    \"email\": \"juanjo@gmail.com\",\r\n    \"birthday\": \"1990-10-23\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:9040/v0/clients/21345114",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9040",
+									"path": [
+										"v0",
+										"clients",
+										"21345114"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Client",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:9040/v0/clients/6797f8da0661a70927c8dbf0",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9040",
+									"path": [
+										"v0",
+										"clients",
+										"6797f8da0661a70927c8dbf0"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Client-Service-Cloud",
+					"item": [
+						{
+							"name": "Get Clients",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:9080/api/client/v0/clients",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9080",
+									"path": [
+										"api",
+										"client",
+										"v0",
+										"clients"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Client",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"dni\" : \"87654322\",\r\n    \"name\": \"Manuelito\",\r\n    \"lastname\": \"Pepito\",\r\n    \"email\": \"manjo1@gmail.com\",\r\n    \"birthday\": \"1990-01-20\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:9080/api/client/v0/clients",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9080",
+									"path": [
+										"api",
+										"client",
+										"v0",
+										"clients"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Client",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"dni\" : \"21345114\",\r\n    \"name\": \"Juanito\",\r\n    \"lastname\": \"Pepito\",\r\n    \"email\": \"juanjo@gmail.com\",\r\n    \"birthday\": \"1990-10-23\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:9080/api/client/v0/clients/21345114",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9080",
+									"path": [
+										"api",
+										"client",
+										"v0",
+										"clients",
+										"21345114"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Client",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:9080/api/client/v0/clients/6797f8da0661a70927c8dbf0",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9080",
+									"path": [
+										"api",
+										"client",
+										"v0",
+										"clients",
+										"6797f8da0661a70927c8dbf0"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "License-Service",
+					"item": [
+						{
+							"name": "Get License Category",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "licenseType",
+										"value": "A-I",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"url": {
+									"raw": "http://localhost:9050/v0/licenses/by-category?licenseCategory=II-B",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9050",
+									"path": [
+										"v0",
+										"licenses",
+										"by-category"
+									],
+									"query": [
+										{
+											"key": "licenseCategory",
+											"value": "II-B"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get License Slow/error",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "licenseType",
+										"value": "A-I",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"url": {
+									"raw": "http://localhost:9050/v0/licenses/error?error=true",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9050",
+									"path": [
+										"v0",
+										"licenses",
+										"error"
+									],
+									"query": [
+										{
+											"key": "error",
+											"value": "true"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Report License",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "licenseType",
+										"value": "A-I",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"url": {
+									"raw": "http://localhost:9050/v0/licenses/report-by-category-csv?licenseCategory=II-A",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9050",
+									"path": [
+										"v0",
+										"licenses",
+										"report-by-category-csv"
+									],
+									"query": [
+										{
+											"key": "licenseCategory",
+											"value": "II-A"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get License Type",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "licenseType",
+										"value": "A-I",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"url": {
+									"raw": "http://localhost:9050/v0/licenses/by-type?licenseType=A",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9050",
+									"path": [
+										"v0",
+										"licenses",
+										"by-type"
+									],
+									"query": [
+										{
+											"key": "licenseType",
+											"value": "A"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get License Validez",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "licenseType",
+										"value": "A-I",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"url": {
+									"raw": "http://localhost:9050/v0/licenses/by-active?active=true",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9050",
+									"path": [
+										"v0",
+										"licenses",
+										"by-active"
+									],
+									"query": [
+										{
+											"key": "active",
+											"value": "true"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get All License",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "licenseType",
+										"value": "A-I",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"url": {
+									"raw": "http://localhost:9050/v0/licenses",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9050",
+									"path": [
+										"v0",
+										"licenses"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Emitir Licencia",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n\r\n  \"licenseType\": \"A\",\r\n  \"licenseCategory\": \"III-B\",\r\n  \"client\": {\r\n    \"dni\": \"15975331\"\r\n  }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:9050/v0/licenses/emitir",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9050",
+									"path": [
+										"v0",
+										"licenses",
+										"emitir"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete License",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:9050/v0/licenses/679859a29e021903acd59e94",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9050",
+									"path": [
+										"v0",
+										"licenses",
+										"679859a29e021903acd59e94"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update License",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n\r\n  \"licenseType\": \"B\",\r\n  \"licenseCategory\": \"II-C\"\r\n\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:9050/v0/licenses/679b02f1b90e503144407b9a",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9050",
+									"path": [
+										"v0",
+										"licenses",
+										"679b02f1b90e503144407b9a"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "License-Service-Cloud",
+					"item": [
+						{
+							"name": "Get License Category",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "licenseType",
+										"value": "A-I",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"url": {
+									"raw": "http://localhost:9080/api/license/v0/licenses/by-category?licenseCategory=II-C",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9080",
+									"path": [
+										"api",
+										"license",
+										"v0",
+										"licenses",
+										"by-category"
+									],
+									"query": [
+										{
+											"key": "licenseCategory",
+											"value": "II-C"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get License Type",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "licenseType",
+										"value": "A-I",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"url": {
+									"raw": "http://localhost:9080/api/license/v0/licenses/by-type?licenseType=B",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9080",
+									"path": [
+										"api",
+										"license",
+										"v0",
+										"licenses",
+										"by-type"
+									],
+									"query": [
+										{
+											"key": "licenseType",
+											"value": "B"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get License Validez",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "licenseType",
+										"value": "A-I",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"url": {
+									"raw": "http://localhost:9080/api/license/v0/licenses/by-active?active=true",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9080",
+									"path": [
+										"api",
+										"license",
+										"v0",
+										"licenses",
+										"by-active"
+									],
+									"query": [
+										{
+											"key": "active",
+											"value": "true"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get All License",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "licenseType",
+										"value": "A-I",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"url": {
+									"raw": "http://localhost:9080/api/license/v0/licenses",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9080",
+									"path": [
+										"api",
+										"license",
+										"v0",
+										"licenses"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Emitir Licencia",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n\r\n  \"licenseType\": \"A\",\r\n  \"licenseCategory\": \"III-C\",\r\n  \"client\": {\r\n    \"dni\": \"21345114\"\r\n   }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:9080/api/license/v0/licenses/emitir",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9080",
+									"path": [
+										"api",
+										"license",
+										"v0",
+										"licenses",
+										"emitir"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete License",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:9080/api/license/v0/licenses/679859a29e021903acd59e94",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9080",
+									"path": [
+										"api",
+										"license",
+										"v0",
+										"licenses",
+										"679859a29e021903acd59e94"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update License",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n\r\n  \"licenseType\": \"B\",\r\n  \"licenseCategory\": \"II-C\"\r\n\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:9080/api/license/v0/licenses/679bf116534a175f9672688e",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9080",
+									"path": [
+										"api",
+										"license",
+										"v0",
+										"licenses",
+										"679bf116534a175f9672688e"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = responseBody;\r",
+									"console.log(data);\r",
+									"pm.environment.set(\"token\",data );"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"create\",\r\n    \"password\": \"123456\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8088/auth/authenticate",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8088",
+							"path": [
+								"auth",
+								"authenticate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"MartinRead\",\r\n    \"lastname\":\"GarciaRead\",\r\n    \"username\": \"read\",\r\n    \"password\": \"123456\",\r\n    \"email\" : \"read@gmail.com1\",\r\n    \"roles\" : [\"ROLE_READ\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8088/auth/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8088",
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

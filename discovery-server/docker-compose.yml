@@ -1,0 +1,310 @@
+
+services:
+  mongo-service:
+    image: mongo
+    container_name: magic1-mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: magic0
+      MONGO_INITDB_ROOT_PASSWORD: mitocode
+    ports:
+      - 27017:27017
+    networks:
+      - magic1
+    volumes:
+      - magic0-mongodb-storage:/data/db
+    
+  mongo-express:
+    image: mongo-express
+    container_name: magic1-mongo-express
+    depends_on:
+      - mongo-service
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: magic0
+      ME_CONFIG_MONGODB_ADMINPASSWORD: mitocode
+      ME_CONFIG_MONGODB_URL: mongodb://magic0:mitocode@mongo-service:27017
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: pass
+    networks:
+      - magic1
+    
+  postgres-mitocode:
+    image: postgres:13.1-alpine
+    container_name: mitocode-docker-postgresql
+    environment:
+      POSTGRES_USER: mitocode
+      POSTGRES_PASSWORD: mitocode
+      POSTGRES_DB: mitocode
+    networks:
+      - magic1
+      
+  prometheus:
+    image: prom/prometheus
+    container_name: magic1-prometheus
+    ports:
+      - 9090:9090
+    volumes:
+      - ../docker-files/prometheus/config/:/etc/prometheus/
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    networks:
+    - magic1     
+
+  grafana:
+    image: grafana/grafana-oss
+    container_name: magic1-grafana
+    ports:
+      - 3000:3000
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_SERVER_DOMAIN: localhost
+    networks:
+    - magic1       
+    
+  loki:
+    image: grafana/loki
+    container_name: magic1-loki
+    ports:
+      - 3100:3100
+    networks:
+      - magic1
+
+  zipkin:
+    image: ghcr.io/openzipkin/zipkin-slim
+    container_name: magic1-zipkin
+    ports:
+      - 9411:9411
+    environment:
+      - STORAGE_TYPE=mem
+    networks:
+      - magic1
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper
+    container_name: magic1-kafka-zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - magic1
+
+  broker:
+    image: confluentinc/cp-kafka
+    container_name: magic1-kafka-broker
+    ports:
+      - 9092:9092
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT, PLAINTEXT_INTERNAL:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:9092, PLAINTEXT_INTERNAL://broker:29092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_REPLICATION_FACTOR: 1
+    networks:
+      - magic1
+
+  mongo-service-kafka: # Id interno del servicio en mongo
+    image: mongo
+    container_name: magic1-mongo-kafka
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: magic0
+      MONGO_INITDB_ROOT_PASSWORD: mitocode
+      MONGO_INITDB_DATABASE: mitocode
+    ports: 
+      - 27018:27017
+    networks:
+      - magic1
+    volumes:
+      - magic0-mongodb-kafka-storage:/data/db
+    
+  mongo-express-kafka:
+    image: mongo-express
+    container_name: magic1-mongo-express-kafka
+    depends_on:
+      - mongo-service-kafka
+    ports:
+      - 8082:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: magic0
+      ME_CONFIG_MONGODB_ADMINPASSWORD: mitocode
+      ME_CONFIG_MONGODB_URL: mongodb://magic0:mitocode@mongo-service-kafka:27017
+    networks:
+      - magic1
+      
+  discovery-server:
+    build: .
+    container_name: magic1-discovery-server
+    healthcheck:
+      test: [ "CMD", "curl", "http://localhost:8761"]
+      interval: 5s
+      timeout: 10s
+      retries: 5
+    ports:
+      - 8761:8761
+    environment:
+      CUSTOM.SERVER.PORT: 8761
+    networks:
+      - magic1
+
+  config-server:
+    build: ../config-server/
+    container_name: magic1-config-server
+    healthcheck:
+      test: ["CMD", "curl", "http://localhost:9000/license-service/prod"]
+      interval: 5s
+      timeout: 10s
+      retries: 5
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+    environment:
+      CUSTOM.SERVER.PORT: 9000
+      EUREKA.SERVER.HOST: http://discovery-server:8761/eureka
+    networks:
+      - magic1 
+
+  license-service:
+    build: ../license-service/
+    container_name: magic1-license-service
+    depends_on:
+      config-server:
+        condition: service_healthy
+      discovery-server:
+        condition: service_healthy
+    environment:
+      EUREKA.SERVER.HOSTNAME: http://discovery-server:8761/eureka
+      CONFIG.SERVER.HOSTNAME: http://config-server:9000
+      MONGODB.URL.CONNECTION: mongodb://magic0:mitocode@mongo-service:27017/mitocode?authSource=admin
+      KAFKA.SERVER.HOSTNAME: broker
+      ZIPKIN.SERVER.HOSTNAME: http://zipkin:9411/api/v2/spans
+    networks:
+      - magic1
+
+  user-service:
+    build: ../user-service/
+    container_name: magic1-user-service
+    depends_on:
+      config-server:
+        condition: service_healthy
+      discovery-server:
+        condition: service_healthy
+    environment:
+      EUREKA.SERVER.HOSTNAME: http://discovery-server:8761/eureka
+      CONFIG.SERVER.HOSTNAME: http://config-server:9000
+      MONGODB.URL.CONNECTION: mongodb://magic0:mitocode@mongo-service:27017/mitocode?authSource=admin
+      KAFKA.SERVER.HOSTNAME: broker
+      ZIPKIN.SERVER.HOSTNAME: http://zipkin:9411/api/v2/spans
+    networks:
+      - magic1
+
+  license-job:
+    build: ../license-job/
+    container_name: magic1-license-job
+    depends_on:
+      config-server:
+        condition: service_healthy
+      discovery-server:
+        condition: service_healthy
+    environment:
+      CONFIG.SERVER.HOSTNAME: http://config-server:9000
+      MONGODB.URL.CONNECTION: mongodb://magic0:mitocode@mongo-service:27017/mitocode?authSource=admin
+    networks:
+      - magic1
+
+  client-query-service:
+    build: ../client-query-service/
+    container_name: magic1-client-query-service
+    depends_on:
+      config-server:
+        condition: service_healthy
+      discovery-server:
+        condition: service_healthy
+    environment:
+      EUREKA.SERVER.HOSTNAME: http://discovery-server:8761/eureka
+      CONFIG.SERVER.HOSTNAME: http://config-server:9000
+      POSTGRESQL.URL.CONNECTION: jdbc:postgresql://postgres-mitocode:5432/mitocode
+      ZIPKIN.SERVER.HOSTNAME: http://zipkin:9411/api/v2/spans
+    networks:
+      - magic1
+ 
+  client-command-service:
+    build: ../client-command-service/
+    container_name: magic1-client-command-service
+    depends_on:
+      config-server:
+        condition: service_healthy
+      discovery-server:
+        condition: service_healthy
+    environment:
+      EUREKA.SERVER.HOSTNAME: http://discovery-server:8761/eureka
+      CONFIG.SERVER.HOSTNAME: http://config-server:9000
+      MONGODB.URL.CONNECTION: mongodb://magic0:mitocode@mongo-service:27017/mitocode?authSource=admin
+      KAFKA.SERVER.HOSTNAME: broker
+      ZIPKIN.SERVER.HOSTNAME: http://zipkin:9411/api/v2/spans
+    networks:
+      - magic1
+      
+  authentication-server-jwt:
+    build: ../authentication-server-jwt/
+    container_name: magic1-authentication-server-jwt
+    depends_on:
+      config-server:
+        condition: service_healthy
+      discovery-server:
+        condition: service_healthy
+    ports:
+      - 8088:8088        
+    environment:
+      EUREKA.SERVER.HOSTNAME: http://discovery-server:8761/eureka
+      CONFIG.SERVER.HOSTNAME: http://config-server:9000
+      MONGODB.URL.CONNECTION: mongodb://magic0:mitocode@mongo-service:27017/mitocode?authSource=admin
+      ZIPKIN.SERVER.HOSTNAME: http://zipkin:9411/api/v2/spans
+    networks:
+      - magic1
+
+  audit-service:
+    build: ../audit-service/
+    container_name: magic1-audit-service
+    depends_on:
+      config-server:
+        condition: service_healthy
+      discovery-server:
+        condition: service_healthy
+    environment:
+      EUREKA.SERVER.HOSTNAME: http://discovery-server:8761/eureka
+      CONFIG.SERVER.HOSTNAME: http://config-server:9000
+      MONGODB.URL.CONNECTION: mongodb://magic0:mitocode@mongo-service:27018/mitocode?authSource=admin
+      KAFKA.SERVER.HOSTNAME: broker
+      POSTGRESQL.URL.CONNECTION: jdbc:postgresql://postgres-mitocode:5432/mitocode
+      ZIPKIN.SERVER.HOSTNAME: http://zipkin:9411/api/v2/spans
+    networks:
+      - magic1
+ 
+  cloud-gateway:
+    build: ../cloud-gateway/
+    container_name: magic1-cloud-gateway
+    depends_on:
+      config-server:
+        condition: service_healthy
+      discovery-server:
+        condition: service_healthy
+    ports:
+      - 9080:9080
+    environment:
+      EUREKA.SERVER.HOSTNAME: http://discovery-server:8761/eureka
+      CONFIG.SERVER.HOSTNAME: http://config-server:9000
+#      ZIPKIN.SERVER.HOSTNAME: http://zipkin:9411/api/v2/spans
+    networks:
+      - magic1
+      
+volumes:
+  magic0-mongodb-storage:
+  magic0-mongodb-kafka-storage:
+      
+networks:
+  magic1:
+    name: magic1-network

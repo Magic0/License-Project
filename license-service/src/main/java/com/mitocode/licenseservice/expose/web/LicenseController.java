@@ -76,8 +76,9 @@ public class LicenseController {
         return ResponseEntity.ok(licenses);
     }
 
-    @GetMapping("/slow/{flag}")
-    public ResponseEntity<List<LicenseDTO>> getAllLicensesWithFlagForSlow(@PathVariable("flag") boolean flag) throws InterruptedException {
+    @GetMapping("/slow")
+    public ResponseEntity<List<LicenseDTO>> getAllLicensesWithFlagForSlow(@RequestParam("slow") boolean flag) throws InterruptedException {
+        log.info("Product Service slow Init");
         if (flag) {
             log.info("Product Service slow");
             TimeUnit.MILLISECONDS.sleep(2400);
@@ -87,9 +88,11 @@ public class LicenseController {
         return ResponseEntity.ok(licenses);
     }
 
-    @GetMapping("/error/flag")
-    public ResponseEntity<List<LicenseDTO>> getAllLicensesWithFlag(@PathVariable("flag") boolean flag) throws InterruptedException {
+    @GetMapping("/error")
+    public ResponseEntity<List<LicenseDTO>> getAllLicensesWithFlag(@RequestParam("error") boolean flag) throws InterruptedException {
+        log.info("Product Service Error Init");
         if (flag) {
+            log.info("Product Service Error");
             TimeUnit.MILLISECONDS.sleep(795);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
@@ -104,9 +107,9 @@ public class LicenseController {
     }
 
     @GetMapping(value = "/report-by-category-csv", produces = "text/csv")
-    public ResponseEntity<byte[]> getReportByCategoryCsv(){
+    public ResponseEntity<byte[]> getReportByCategoryCsv(@RequestParam(name = "licenseCategory") String licenseCategory){
 
-        byte[] report = licenseService.generateCsvReport();
+        byte[] report = licenseService.generateCsvReport(licenseCategory);
         HttpHeaders headers = new HttpHeaders();
         headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=licenses_report.csv");
         headers.set(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_PLAIN_VALUE);

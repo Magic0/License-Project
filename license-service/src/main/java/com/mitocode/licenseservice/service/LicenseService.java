@@ -2,7 +2,6 @@ package com.mitocode.licenseservice.service;
 
 import com.mitocode.common_models.model.dto.ClientDTO;
 import com.mitocode.common_models.model.dto.GenericModel;
-import com.mitocode.licenseservice.model.dto.CategoryReportDTO;
 import com.mitocode.licenseservice.model.dto.LicenseDTO;
 import com.mitocode.licenseservice.model.entity.LicenseEntity;
 import com.mitocode.licenseservice.proxy.ClientFeign;
@@ -18,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.time.LocalDate;
 import java.util.List;
@@ -157,33 +157,46 @@ public class LicenseService {
         return date.isAfter(LocalDate.now());
     }
 
-    public List<CategoryReportDTO> getLicenseReportByCategory() {
-        return licenseRepository.getLicenseCountByCategory();
+    public List<LicenseEntity> getLicenseReportByCategory(String category) {
+        return licenseRepository.getAllByLicenseCategory(category);
     }
 
-    public byte[] generateCsvReport() {
-        List<CategoryReportDTO> report = getLicenseReportByCategory();
-
+    public byte[] generateCsvReport(String category) {
+        List<LicenseEntity> report = getLicenseReportByCategory(category);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         OutputStreamWriter writer = new OutputStreamWriter(outputStream);
         byte[] csvBytes;
-        try ( CSVWriter csvWriter = new CSVWriter(writer)) {
-            String[] header = {
-                    "LicenseCategory", "TotalLicenses"
-            };
 
-            for (CategoryReportDTO data : report) {
+        try (CSVWriter csvWriter = new CSVWriter(writer)) {
+            String[] header = {
+                    "idLicense", "Fecha De Emision", "Fecha De Expiracion", "Activo", "Categoria", "Tipo",
+                    "DNI Cliente", "Nombre Cliente", "Apellido Cliente", "Correo Cliente", "Fecha De Nacimiento Cliente"
+            };
+            csvWriter.writeNext(header);
+
+            for (LicenseEntity data : report) {
                 String[] row = {
-                        data.getLicenseCategory(), String.valueOf(data.getTotalLicenses())
+                        data.getIdLicense(), data.getIssueDate().toString(), data.getExpirationDate().toString(), data.getIsActive().toString(),
+                        data.getLicenseCategory(), data.getLicenseType(), data.getClient().getDNI(), data.getClient().getName(),
+                        data.getClient().getLastname(), data.getClient().getEmail(), data.getClient().getBirthday().toString()
                 };
                 csvWriter.writeNext(row);
             }
-            csvWriter.close();
-            writer.close();
+
+            csvWriter.flush();
             csvBytes = outputStream.toByteArray();
         } catch (Exception e) {
+            log.error("Error generating CSV report: {}", e.getMessage(), e);
             throw new RuntimeException("Error generating CSV report", e);
+        } finally {
+            try {
+                writer.close();
+                outputStream.close();
+            } catch (IOException e) {
+                log.error("Error closing resources: {}", e.getMessage(), e);
+            }
         }
+
         return csvBytes;
     }
 }

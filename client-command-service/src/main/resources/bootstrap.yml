@@ -3,5 +3,6 @@ spring:
     name: client-command-service
   cloud:
     config:
-      uri: http://localhost:9000
-      profile: prod
+      uri: ${CONFIG.SERVER.HOSTNAME:http://localhost:9000}
+      profile: ${ENVIRONMENT.DEPLOY:prod}
+      enabled: true

@@ -13,7 +13,7 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class LicenseService {
+public class LicenseJobService {
 
     private final LicenseRepository licenseRepository;
     private final LicenseCustomRepository licenseCustomRepository;

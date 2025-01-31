@@ -16,7 +16,7 @@ spring:
           defaultLabel: master
           refreshRate: 10
         encrypt:
-          enabled: true
+          enabled: false
 
 
 eureka:
